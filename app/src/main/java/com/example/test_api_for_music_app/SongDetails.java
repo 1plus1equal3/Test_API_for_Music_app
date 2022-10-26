@@ -1,13 +1,13 @@
 package com.example.test_api_for_music_app;
 
 public class SongDetails {
-    private String title;
+    private Song[] audio;
 
-    public String getTitle() {
-        return title;
+    public Song[] getAudio() {
+        return audio;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setAudio(Song[] audio) {
+        this.audio = audio;
     }
 }

@@ -8,16 +8,16 @@ import retrofit2.http.Query;
 
 public interface Api {
     /*String BASE_URL = "https://jsonplaceholder.typicode.com/";*/
-    String BASE_URL = "https://shazam.p.rapidapi.com/";
+    String BASE_URL = "https://soundcloud-scraper.p.rapidapi.com/";
     /*@GET("posts")*/
 
 
-    @GET("songs/get-details?key=40333609")
+    @GET("v1/track/metadata?download=sq")
     @Headers(
             {
                     "X-RapidAPI-Key: 9a3600aff0mshb09b2849f51a904p170ca6jsn9741a4d51e4b",
-                    "X-RapidAPI-Host: shazam.p.rapidapi.com"
+                    "X-RapidAPI-Host: soundcloud-scraper.p.rapidapi.com"
             })
     /*?key=40333609&locale=en-US*/
-    Call<SongDetails> getSongTitle();
+    Call<SongDetails> getSongUrl(@Query("track") String track);
 }

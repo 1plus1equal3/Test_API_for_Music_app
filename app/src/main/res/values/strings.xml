@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Test_API_for_Music_app</string>
+    <string name="test_url"></string>
+    <string name="url">https://scd.dlod.link/?expire=1666774606524&amp;p=N0YU77svgNon0d653jfpubr7dxNJYZRe2OJiGZSdmqsKJD9B36gJXhGFCJpKcEwlJy-lOVdgzEaW65-T3M3cc4SbcYed10UcXXdxiBQo3JYk9hspgZH4wWf4LQBvH9M7Byq_MnRyFzBpCOPFFv_PAVw1-tXPuoNY7s0mHQL-Bm6XXlIuL1sol1pFBz6xB1Vvmpr40phvoQbB6BAvA1wUng&amp;s=2ofpfieTC8W57g8e0zec5QVcx2N_2IrpGGZoHDodKbQ</string>
 </resources>
