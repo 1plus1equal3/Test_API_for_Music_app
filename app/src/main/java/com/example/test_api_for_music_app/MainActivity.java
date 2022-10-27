@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     Uri uri;
     PlayerControlView playerControlView;
     boolean check = false;
+    String[] ids;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +39,12 @@ public class MainActivity extends AppCompatActivity {
         //Generate player and player control view
         player = new ExoPlayer.Builder(this).build();
         playerControlView.setPlayer(player);
-        //Set up song url and add MediaItem to player
+        //Add song id to String[] ids
         button.setOnClickListener(view -> {
-            getSongTitle();
+            getSongId();
         });
 
-        if(player.getPlaybackState() == ExoPlayer.STATE_ENDED){
+        if (player.getPlaybackState() == ExoPlayer.STATE_ENDED) {
             player.release();
         }
         //Play music button
@@ -64,9 +65,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     //Call api to retrieve url of songs
-    private void getSongTitle() {
-        Call<SongDetails> call = RetrofitClient.getInstance().getApi().getSongUrl("https://soundcloud.com/huynguyen0503/anh-chua-thuong-em-den-vay-dau");
+    private void CookingPlayer(String track) {
+        Call<SongDetails> call = RetrofitClient.getInstance().getApi().getSongUrl(track);
         call.enqueue(new Callback<SongDetails>() {
             @Override
             public void onResponse(Call<SongDetails> call, Response<SongDetails> response) {
@@ -81,6 +83,27 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<SongDetails> call, Throwable t) {
+                Log.e("Fail call: ", t.getMessage());
+                Toast.makeText(getApplicationContext(), "Error has occurred", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void getSongId() {
+        Call<ResponseBody> call = RetrofitClient.getInstance().getApi().getSongId("https://soundcloud.com/kitelli/sets/the-masked-singer-vietnam");
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                ResponseBody body = response.body();
+                //Add all song id from api to String[] ids array!
+                for (int i = 0; i < body.getTracks().getItems().length; i++) {
+                    ids[i] = body.getTracks().getItems()[i].getId();
+                    Log.e("Id of " + i + " song is: ", ids[i]);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.e("Fail call: ", t.getMessage());
                 Toast.makeText(getApplicationContext(), "Error has occurred", Toast.LENGTH_SHORT).show();
             }
