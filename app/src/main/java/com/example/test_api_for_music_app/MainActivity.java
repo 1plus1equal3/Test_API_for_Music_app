@@ -2,7 +2,9 @@ package com.example.test_api_for_music_app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +37,19 @@ public class MainActivity extends AppCompatActivity {
         button = findViewById(R.id.button);
         testSongBtn = findViewById(R.id.test_url);
         //Add song id to String[] ids
-        button.setOnClickListener(view -> getSongId());
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getSongId();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(MainActivity.this, MainActivity2.class);
+                        startActivity(intent);
+                    }
+                }, 3000);
+            }
+        });
         //Play music button
         testSongBtn.setOnClickListener(view -> {
             Intent intent = new Intent(this, MainActivity2.class);
@@ -71,26 +85,32 @@ public class MainActivity extends AppCompatActivity {
     }*/
 
     private void getSongId() {
-        Call<ResponseBody> call = RetrofitClient.getInstance().getApi().getSongId("https://soundcloud.com/kitelli/sets/the-masked-singer-vietnam");
-        call.enqueue(new Callback<ResponseBody>() {
+        new Thread(new Runnable() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                ResponseBody body = response.body();
-                Log.d("", "onResponse: " + body);
-                //Add all song id from api to String[] ids array!
-                for (int i = 0; i < body.getTracks().getItems().length; i++) {
-                    ids.add(i, body.getTracks().getItems()[i].getId());
-                    //add info to songItemList
-                    songItemList.add(i, new SongItem(ids.get(i), body.getTracks().getItems()[i].getTitle(), body.getTracks().getItems()[i].getPermalink()));
-                    Log.e("Id of " + i + " song is: ", String.valueOf(ids.get(i)));
-                }
-            }
+            public void run() {
+                Call<ResponseBody> call = RetrofitClient.getInstance().getApi().getSongId("https://soundcloud.com/kitelli/sets/the-masked-singer-vietnam");
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        ResponseBody body = response.body();
+                        Log.d("", "onResponse: " + body);
+                        //Add all song id from api to String[] ids array!
+                        for (int i = 0; i < body.getTracks().getItems().length; i++) {
+                            ids.add(i, body.getTracks().getItems()[i].getId());
+                            //add info to songItemList
+                            songItemList.add(i, new SongItem(ids.get(i), body.getTracks().getItems()[i].getTitle(), body.getTracks().getItems()[i].getPermalink()));
+                            Log.e("Id of " + i + " song is: ", String.valueOf(ids.get(i)));
+                        }
+                    }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("Fail call: ", t.getMessage());
-                Toast.makeText(getApplicationContext(), "Error has occurred", Toast.LENGTH_SHORT).show();
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Log.e("Fail call: ", t.getMessage());
+                        Toast.makeText(getApplicationContext(), "Error has occurred", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
-        });
+        }).start();
     }
+
 }
